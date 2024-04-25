@@ -1,18 +1,23 @@
 import os
 import tkinter as tk
+from tkinter import *
 from tkinter import filedialog
 
 
 nombreArchivo = ''
 contenido=''
+nuevaVentana=''
+contenidoNuevoTexto=''
 
 def buscarArchivo():
     global nombreArchivo
     archivo=tk.filedialog.askopenfile()
     nombreArchivo=archivo.name
 
+
 def crearArchivo():
     global contenido
+    #Leer texto del archivo seleccionado
     with open (nombreArchivo, 'r', encoding='utf-8') as file:
         text = file.read()
         contenido=file.read()
@@ -74,12 +79,30 @@ def crearArchivo():
             for char, repetitions in sorted_chardic:
                 newtext.write(f"character: {char}, repetitions: {repetitions}\n")
     
+    
     with open(nombreArchivo,'r', encoding='utf-8') as file:
             text = file.read()
     print (text)
 
+
+def mostrarTexto():
+    global nuevaVentana
+    global contenidoNuevoTexto
+    with open ('new_text.txt', 'r', encoding='utf-8') as file:
+            contenidoNuevoTexto = file.read()
+    nuevaVentana = Toplevel()
+    scrollbar = tk.Scrollbar(nuevaVentana)
+    scrollbar.pack(side='right', fill='y')
+    
+    text_widget = tk.Text(nuevaVentana)
+    text_widget.insert(tk.END, contenidoNuevoTexto)
+    text_widget.pack(fill=tk.BOTH, expand=True)
+    
+    scrollbar.config(command=text_widget.yview)
+    text_widget.config(yscrollcommand=scrollbar.set)
+    
 app = tk.Tk()
-app.geometry('600x200')
+app.geometry('500x200')
 
 tk.Button(
     app,
@@ -98,11 +121,13 @@ tk.Button(
     fill=tk.BOTH,
     expand=True,
 )
-tk.Label(
+tk.Button(
     app,
-    text=contenido,
+    text= "Mostrar Texto",
+    command= mostrarTexto
 ).pack(
     fill=tk.BOTH,
     expand=True,
 )
+
 app.mainloop()
